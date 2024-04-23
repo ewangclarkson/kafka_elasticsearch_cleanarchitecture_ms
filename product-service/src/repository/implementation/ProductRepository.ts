@@ -13,7 +13,7 @@ export default class ProductRepository implements IProductRepository {
 
         const sql = `INSERT INTO products SET ?`;
 
-        const [rows, fields] = await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt']))]);
+        const [rows] = await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt']))]);
 
         const prod: Product = await this.findOne(rows.insertId);
 
@@ -26,7 +26,7 @@ export default class ProductRepository implements IProductRepository {
 
         const prod: Product = await this.findOne(id);
 
-        const [rows, fields] = await Pool.query<ResultSetHeader>(sql, [id]);
+        await Pool.query<ResultSetHeader>(sql, [id]);
 
         return Promise.resolve(prod);
     }
@@ -35,7 +35,7 @@ export default class ProductRepository implements IProductRepository {
 
         const sql = `SELECT * FROM products WHERE id = ?;`;
 
-        const [rows, fields] = await Pool.query<RowDataPacket[]>(sql, [id]);
+        const [rows] = await Pool.query<RowDataPacket[]>(sql, [id]);
 
         const product: Product[] = plainToClass(Product, rows,
             {excludeExtraneousValues: true}
@@ -48,7 +48,7 @@ export default class ProductRepository implements IProductRepository {
 
         const sql = `SELECT * FROM products`;
 
-        const [rows, fields] = await Pool.query<RowDataPacket[]>(sql);
+        const [rows] = await Pool.query<RowDataPacket[]>(sql);
 
         const products: Product[] = plainToClass(Product, rows,
             {excludeExtraneousValues: true}
@@ -61,7 +61,7 @@ export default class ProductRepository implements IProductRepository {
 
         const sql = `UPDATE products SET ? WHERE id = ?`;
 
-        const [rows, fields] = await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt'])), id]);
+         await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt'])), id]);
 
         const prod: Product = await this.findOne(id);
 
