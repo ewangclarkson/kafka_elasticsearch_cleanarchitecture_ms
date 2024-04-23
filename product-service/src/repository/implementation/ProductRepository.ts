@@ -2,56 +2,71 @@ import IProductRepository from "../IProductRepository";
 import {Product} from "../../domain/model/Product";
 import Pool from "../../startup/database";
 import {injectable} from "inversify";
+import {plainToClass} from "class-transformer";
+import {RowDataPacket, ResultSetHeader} from "mysql2";
+import _ from "lodash"
 
 
 @injectable()
 export default class ProductRepository implements IProductRepository {
     async create(product: Product): Promise<Product> {
 
-        const sql = `INSERT INTO products (name,description,stock) VALUES(${product.name},${product.description},${product.stock});`;
+        const sql = `INSERT INTO products SET ?`;
 
-        const [rows, fields] = await Pool.query(sql);
+        const [rows, fields] = await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt']))]);
 
-        return Promise.resolve( new Product(1,"dg","dete",3));
+        const prod: Product = await this.findOne(rows.insertId);
+
+        return Promise.resolve(prod);
     }
 
     async delete(id: number): Promise<Product> {
 
-        const sql = `DELETE * FROM products WHERE id=${id};`;
+        const sql = `DELETE FROM products WHERE id = ?`;
 
-        const [rows, fields] = await Pool.query(sql);
-        console.log(rows);
+        const prod: Product = await this.findOne(id);
 
-        return Promise.resolve(new Product(1,"dg","dete",3));
+        const [rows, fields] = await Pool.query<ResultSetHeader>(sql, [id]);
+
+        return Promise.resolve(prod);
     }
 
     async findOne(id: number): Promise<Product> {
 
-        const sql = `SELECT * FROM products WHERE id=${id};`;
+        const sql = `SELECT * FROM products WHERE id = ?;`;
 
-        const [rows, fields] = await Pool.query(sql);
-        console.log(rows);
+        const [rows, fields] = await Pool.query<RowDataPacket[]>(sql, [id]);
 
+        const product: Product[] = plainToClass(Product, rows,
+            {excludeExtraneousValues: true}
+        );
 
-        return Promise.resolve(new Product(1,"dg","dete",3));
+        return Promise.resolve(product[0]);
     }
 
     async find(): Promise<Product[]> {
 
-        const sql = `SELECT * FROM products;`;
+        const sql = `SELECT * FROM products`;
 
-        const [rows, fields] = await Pool.query(sql);
-        console.log(rows);
-        return Promise.resolve([new Product(1,"dg","dete",3)]);
+        const [rows, fields] = await Pool.query<RowDataPacket[]>(sql);
+
+        const products: Product[] = plainToClass(Product, rows,
+            {excludeExtraneousValues: true}
+        );
+
+        return Promise.resolve(products);
     }
 
     async update(id: number, product: Product): Promise<Product> {
 
-        const sql = `UPDATE products SET name=${product.name} description=${product.description} stock=${product.stock}`;
+        const sql = `UPDATE products SET ? WHERE id = ?`;
 
-        const [rows, fields] = await Pool.query(sql);
-        console.log(rows);
-        return Promise.resolve(new Product(1,"dg","dete",3));
+        const [rows, fields] = await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt'])), id]);
+
+        const prod: Product = await this.findOne(id);
+
+        return Promise.resolve(prod);
     }
+
 
 }

@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/config": "^3.3.4",
+    "@types/lodash": "^4.17.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "compression": "^1.7.4",
@@ -22,6 +23,7 @@
     "helmet": "^7.1.0",
     "http-status": "^1.7.4",
     "inversify": "^6.0.2",
+    "lodash": "^4.17.21",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.6",
     "nodemon": "^3.1.0",

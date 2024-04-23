@@ -1,4 +1,6 @@
+import {Expose} from "class-transformer";
+
 export class BaseEntity {
-   public createdAt: string | null=null;
-   public updatedA: string | null=null;
+   @Expose({name:'created_at'}) public createdAt!: string;
+   @Expose({name:'updated_at'}) public updatedAt!: string;
 }

@@ -51,7 +51,6 @@ export default class ProductController {
     }
 
     async getProducts(request: Request, response: Response, next: NextFunction) {
-        console.log(this._productService);
 
         const products: ProductResponseDto[] = await this._productService.getProducts();
         return response.status(HttpStatus.OK).send(products);
@@ -61,7 +60,7 @@ export default class ProductController {
         const product = await this._productService.getProduct(parseInt(request.params.id));
         if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
-        await this._productService.deleteProduct(parseInt(request.body.params.id));
+        await this._productService.deleteProduct(parseInt(request.params.id));
 
         return response.status(HttpStatus.OK).send(product);
     }
