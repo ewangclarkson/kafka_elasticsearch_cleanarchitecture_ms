@@ -1,0 +1,11 @@
+{
+  "app": {
+    "name": "Product Service - Clean Architecture",
+    "port": 8001
+  },
+  "database": {
+    "host": "localhost",
+    "user": "root",
+    "name": "codewithjay"
+  }
+}
