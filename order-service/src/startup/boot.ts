@@ -2,7 +2,7 @@ import express, {Application} from "express";
 import cors from "cors";
 import compression from "compression";
 import helmet from "helmet";
-import productApis from "../routes/products";
+import ordersApis from "../routes/orders.routes";
 
 
 export const startApplication = function (app: Application) {
@@ -10,5 +10,5 @@ export const startApplication = function (app: Application) {
     app.use(helmet());
     app.use(cors());
     app.use(compression());
-    app.use("/api/products", productApis);
+    app.use("/api/orders", ordersApis);
 };

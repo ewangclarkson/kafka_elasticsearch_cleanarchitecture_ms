@@ -5,63 +5,50 @@ import OrderRequestDto from "../domain/dto/OrderRequestDto";
 import HttpStatus from "http-status";
 import {inject, injectable} from "inversify";
 import {IOC} from "../inversify/inversify.ioc.types";
-import ProductService from "../service/OrderService";
+import OrderService from "../service/OrderService";
 
 
 @injectable()
-export default class ProductController {
+export default class OrderController {
 
-    private _productService: ProductService;
+    private _orderService: OrderService;
 
     constructor(
-        @inject(IOC.ProductService) productService: ProductService
+        @inject(IOC.OrderService) orderService: OrderService
     ) {
-        this._productService = productService;
+        this._orderService = orderService;
     }
 
-    async createProduct(request: Request, response: Response, next: NextFunction) {
+    async createOrder(request: Request, response: Response, next: NextFunction) {
         const {errors, input} = await RequestValidator(OrderRequestDto, request.body);
 
         if (errors) return response.status(HttpStatus.BAD_REQUEST).send(errors);
 
-        const product: OrderResponseDto = await this._productService.createProduct(input);
+        const order: OrderResponseDto = await this._orderService.createOrder(input);
 
-        return response.status(HttpStatus.CREATED).send(product);
+        return response.status(HttpStatus.CREATED).send(order);
     }
 
 
-    async updateProduct(request: Request, response: Response, next: NextFunction) {
-        const {errors, input} = await RequestValidator(OrderRequestDto, request.body);
+    async getOrder(request: Request, response: Response, next: NextFunction) {
+        const order = await this._orderService.getOrder(parseInt(request.params.id));
+        if (!order) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
-        if (errors) return response.status(HttpStatus.BAD_REQUEST).send(errors);
-
-        const product = await this._productService.getProduct(parseInt(request.params.id));
-        if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
-
-        const savedProduct: OrderResponseDto = await this._productService.updateProduct(parseInt(request.params.id), input);
-
-        return response.status(HttpStatus.OK).send(savedProduct);
+        return response.status(HttpStatus.OK).send(order);
     }
 
-    async getProduct(request: Request, response: Response, next: NextFunction) {
-        const product = await this._productService.getProduct(parseInt(request.params.id));
-        if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
+    async getOrders(request: Request, response: Response, next: NextFunction) {
 
-        return response.status(HttpStatus.OK).send(product);
+        const orders: OrderResponseDto[] = await this._orderService.getOrders();
+        return response.status(HttpStatus.OK).send(orders);
     }
 
-    async getProducts(request: Request, response: Response, next: NextFunction) {
+    async deleteOrder(request: Request, response: Response, next: NextFunction) {
+        const order = await this._orderService.getOrder(parseInt(request.params.id));
+        if (!order) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
-        const products: OrderResponseDto[] = await this._productService.getProducts();
-        return response.status(HttpStatus.OK).send(products);
-    }
+        await this._orderService.deleteOrder(parseInt(request.params.id));
 
-    async deleteProduct(request: Request, response: Response, next: NextFunction) {
-        const product = await this._productService.getProduct(parseInt(request.params.id));
-        if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
-
-        await this._productService.deleteProduct(parseInt(request.params.id));
-
-        return response.status(HttpStatus.OK).send(product);
+        return response.status(HttpStatus.OK).send(order);
     }
 }

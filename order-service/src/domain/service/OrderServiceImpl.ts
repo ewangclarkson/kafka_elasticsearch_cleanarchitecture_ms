@@ -1,4 +1,4 @@
-import ProductService from "../../service/OrderService";
+import OrderService from "../../service/OrderService";
 import {inject, injectable} from "inversify";
 import OrderRequestDto from "../dto/OrderRequestDto";
 import OrderResponseDto from "../dto/OrderResponseDto";
@@ -8,39 +8,34 @@ import {plainToClass} from "class-transformer"
 import {Order} from "../model/Order";
 
 @injectable()
-export default class ProductServiceImpl implements ProductService {
+export default class OrderServiceImpl implements OrderService {
 
-    private _productRepository: IOrderRepository;
+    private _orderRepository: IOrderRepository;
 
     constructor(
-        @inject(IOC.ProductRepository) productRepository: IOrderRepository
+        @inject(IOC.OrderRepository) orderRepository: IOrderRepository
     ) {
-        this._productRepository = productRepository;
+        this._orderRepository = orderRepository;
     }
 
-    async createProduct(productRequestDto: OrderRequestDto): Promise<OrderResponseDto> {
-        return this._productRepository.create(plainToClass(Order, productRequestDto));
+    async createOrder(orderRequestDto: OrderRequestDto): Promise<OrderResponseDto> {
+        return this._orderRepository.create(plainToClass(Order, orderRequestDto));
     }
 
-    async deleteProduct(id: number): Promise<OrderResponseDto> {
-        const product = await this._productRepository.delete(id);
-        return plainToClass(OrderResponseDto, product);
+    async deleteOrder(id: number): Promise<OrderResponseDto> {
+        const order = await this._orderRepository.delete(id);
+        return plainToClass(OrderResponseDto, order);
     }
 
-    async getProduct(id: number): Promise<OrderResponseDto | null> {
-        const product = await this._productRepository.findOne(id);
-        if(!product) return Promise.resolve(product);
-        return plainToClass(OrderResponseDto, product);
+    async getOrder(id: number): Promise<OrderResponseDto | null> {
+        const order = await this._orderRepository.findOne(id);
+        if(!order) return Promise.resolve(order);
+        return plainToClass(OrderResponseDto, order);
     }
 
-    async getProducts(): Promise<OrderResponseDto[] | []> {
-        const products = await this._productRepository.find();
-        return plainToClass(OrderResponseDto, products);
-    }
-
-    async updateProduct(id: number, updateRequestDto: OrderRequestDto): Promise<OrderResponseDto> {
-        const product = await this._productRepository.update(id, plainToClass(Order, updateRequestDto));
-        return plainToClass(OrderResponseDto, product)
+    async getOrders(): Promise<OrderResponseDto[] | []> {
+        const orders = await this._orderRepository.find();
+        return plainToClass(OrderResponseDto, orders);
     }
 
 }

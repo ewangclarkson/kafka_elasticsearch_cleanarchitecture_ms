@@ -1,6 +1,6 @@
 import {IsNotEmpty, IsNumber, IsString} from "class-validator";
 
-export default class ProductRequestDto {
+export default class OrderRequestDto {
     @IsString()
     @IsNotEmpty()
     name!: string;

@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Product Service - Clean Architecture",
+    "name": "Order Service - Clean Architecture",
     "port": 8001
   },
   "database": {

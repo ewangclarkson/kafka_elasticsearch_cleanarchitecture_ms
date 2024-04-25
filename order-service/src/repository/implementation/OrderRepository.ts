@@ -1,57 +1,31 @@
 import IOrderRepository from "../IOrderRepository";
-import {Product} from "../../domain/model/Product";
-import Pool from "../../startup/database";
+import {Order} from "../../domain/model/Order";
 import {inject, injectable} from "inversify";
-import {plainToClass} from "class-transformer";
-import {RowDataPacket, ResultSetHeader} from "mysql2";
 import _ from "lodash"
-import ProductService from "../../service/ProductService";
-import {IOC} from "../../inversify/inversify.ioc.types";
-import {PrismaClient} from "@prisma/client";
 
 
 @injectable()
-export default class ProductRepository implements IOrderRepository {
+export default class OrderRepository implements IOrderRepository {
 
-    private _prismaClient: PrismaClient;
 
-    constructor() {
-        this._prismaClient = new PrismaClient();
+    async create(product: Order): Promise<Order> {
+
+        return Promise.resolve(new Order());
     }
 
-    async create(product: Product): Promise<Product> {
+    async delete(id: number): Promise<Order> {
 
-        return this._prismaClient.product.create({
-            data: (_.omit(product, ['id', 'createdAt', 'updatedAt']))
-        });
+        return Promise.resolve(new Order());
     }
 
-    async delete(id: number): Promise<Product> {
+    async findOne(id: number): Promise<Order | null> {
 
-        return this._prismaClient.product.delete({
-            where: {id: id}
-        });
-    }
-
-    async findOne(id: number): Promise<Product | null> {
-
-         return  this._prismaClient.product.findFirst({
-            where: {id: id}
-        });
+        return Promise.resolve(new Order());
 
     }
 
-    async find(): Promise<Product[]> {
-        return this._prismaClient.product.findMany();
+    async find(): Promise<Order[]> {
+        return Promise.resolve([new Order()]);
     }
-
-    async update(id: number, product: Product): Promise<Product> {
-
-        return this._prismaClient.product.update({
-            where: {id: id},
-            data: (_.omit(product, ['id', 'createdAt', 'updatedAt']))
-        });
-    }
-
 
 }

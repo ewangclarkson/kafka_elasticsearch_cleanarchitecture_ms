@@ -1,15 +1,13 @@
-import ProductRequestDto from "../domain/dto/ProductRequestDto";
-import ProductResponseDto from "../domain/dto/ProductResponseDto";
+import OrderRequestDto from "../domain/dto/OrderRequestDto";
+import OrderResponseDto from "../domain/dto/OrderResponseDto";
 
-export default interface ProductService {
-     createProduct(productRequestDto: ProductRequestDto): Promise<ProductResponseDto>;
+export default interface OrderService {
+    createOrder(orderRequestDto: OrderRequestDto): Promise<OrderResponseDto>;
+    
+    getOrder(id: number): Promise<OrderResponseDto | null>;
 
-    updateProduct(id: number, updateRequestDto: ProductRequestDto): Promise<ProductResponseDto>
+    deleteOrder(id: number): Promise<OrderResponseDto>;
 
-    getProduct(id: number): Promise<ProductResponseDto | null>;
-
-    deleteProduct(id: number): Promise<ProductResponseDto>;
-
-    getProducts(): Promise<ProductResponseDto[]>;
+    getOrders(): Promise<OrderResponseDto[]>;
 
 }

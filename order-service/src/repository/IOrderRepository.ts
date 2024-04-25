@@ -1,16 +1,14 @@
-import {Product} from "../domain/model/Product";
+import {Order} from "../domain/model/Order";
 
-export default interface IProductRepository {
+export default interface IOrderRepository {
 
-    create(product: Product): Promise<Product>;
+    create(product: Order): Promise<Order>;
 
-    update(id: number, product: Product): Promise<Product>;
+    findOne(id: number): Promise<Order | null>;
 
-    findOne(id: number): Promise<Product | null>;
+    find(): Promise<Order[]>;
 
-    find(): Promise<Product[]>;
-
-    delete(id: number): Promise<Product>;
+    delete(id: number): Promise<Order>;
 
 
 }

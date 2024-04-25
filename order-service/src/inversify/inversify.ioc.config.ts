@@ -1,15 +1,15 @@
 import {Container} from "inversify";
 import {IOC} from "./inversify.ioc.types"
-import IProductRepository from "../repository/IProductRepository";
-import ProductionRepository from "../repository/implementation/ProductRepository";
-import ProductService from "../service/ProductService";
-import ProductServiceImpl from "../domain/service/ProductServiceImpl"
-import ProductController from "../controller/ProductController";
+import IOrderRepository from "../repository/IOrderRepository";
+import OrderRepository from "../repository/implementation/OrderRepository";
+import OrderService from "../service/OrderService";
+import OrderServiceImpl from "../domain/service/OrderServiceImpl"
+import OrderController from "../controller/OrderController";
 
 
 const container = new Container();
-container.bind<IProductRepository>(IOC.ProductRepository).to(ProductionRepository);
-container.bind<ProductService>(IOC.ProductService).to(ProductServiceImpl);
-container.bind(IOC.ProductController).to(ProductController);
+container.bind<IOrderRepository>(IOC.OrderRepository).to(OrderRepository);
+container.bind<OrderService>(IOC.OrderService).to(OrderServiceImpl);
+container.bind(IOC.OrderController).to(OrderController);
 
 export {container};
