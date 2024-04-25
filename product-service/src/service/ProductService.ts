@@ -6,7 +6,7 @@ export default interface ProductService {
 
     updateProduct(id: number, updateRequestDto: ProductRequestDto): Promise<ProductResponseDto>
 
-    getProduct(id: number): Promise<ProductResponseDto>;
+    getProduct(id: number): Promise<ProductResponseDto | null>;
 
     deleteProduct(id: number): Promise<ProductResponseDto>;
 

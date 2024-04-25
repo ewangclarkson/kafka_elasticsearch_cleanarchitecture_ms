@@ -60,6 +60,7 @@ npm-debug.log./r
 yarn-error.log
 testem.log
 /typings
+/prisma/migrations
 
 # System Files
 .DS_Store

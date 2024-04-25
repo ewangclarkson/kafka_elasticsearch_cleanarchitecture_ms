@@ -6,7 +6,7 @@ export default interface IProductRepository {
 
     update(id: number, product: Product): Promise<Product>;
 
-    findOne(id: number): Promise<Product>;
+    findOne(id: number): Promise<Product | null>;
 
     find(): Promise<Product[]>;
 

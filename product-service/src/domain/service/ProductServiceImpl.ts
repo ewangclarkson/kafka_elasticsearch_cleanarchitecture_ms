@@ -27,8 +27,9 @@ export default class ProductServiceImpl implements ProductService {
         return plainToClass(ProductResponseDto, product);
     }
 
-    async getProduct(id: number): Promise<ProductResponseDto> {
+    async getProduct(id: number): Promise<ProductResponseDto | null> {
         const product = await this._productRepository.findOne(id);
+        if(!product) return Promise.resolve(product);
         return plainToClass(ProductResponseDto, product);
     }
 

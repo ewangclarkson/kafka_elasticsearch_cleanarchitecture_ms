@@ -1,71 +1,56 @@
 import IProductRepository from "../IProductRepository";
 import {Product} from "../../domain/model/Product";
 import Pool from "../../startup/database";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import {plainToClass} from "class-transformer";
 import {RowDataPacket, ResultSetHeader} from "mysql2";
 import _ from "lodash"
+import ProductService from "../../service/ProductService";
+import {IOC} from "../../inversify/inversify.ioc.types";
+import {PrismaClient} from "@prisma/client";
 
 
 @injectable()
 export default class ProductRepository implements IProductRepository {
+
+    private _prismaClient: PrismaClient;
+
+    constructor() {
+        this._prismaClient = new PrismaClient();
+    }
+
     async create(product: Product): Promise<Product> {
 
-        const sql = `INSERT INTO products SET ?`;
-
-        const [rows] = await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt']))]);
-
-        const prod: Product = await this.findOne(rows.insertId);
-
-        return Promise.resolve(prod);
+        return this._prismaClient.product.create({
+            data: (_.omit(product, ['id', 'createdAt', 'updatedAt']))
+        });
     }
 
     async delete(id: number): Promise<Product> {
 
-        const sql = `DELETE FROM products WHERE id = ?`;
-
-        const prod: Product = await this.findOne(id);
-
-        await Pool.query<ResultSetHeader>(sql, [id]);
-
-        return Promise.resolve(prod);
+        return this._prismaClient.product.delete({
+            where: {id: id}
+        });
     }
 
-    async findOne(id: number): Promise<Product> {
+    async findOne(id: number): Promise<Product | null> {
 
-        const sql = `SELECT * FROM products WHERE id = ?;`;
+         return  this._prismaClient.product.findFirst({
+            where: {id: id}
+        });
 
-        const [rows] = await Pool.query<RowDataPacket[]>(sql, [id]);
-
-        const product: Product[] = plainToClass(Product, rows,
-            {excludeExtraneousValues: true}
-        );
-
-        return Promise.resolve(product[0]);
     }
 
     async find(): Promise<Product[]> {
-
-        const sql = `SELECT * FROM products`;
-
-        const [rows] = await Pool.query<RowDataPacket[]>(sql);
-
-        const products: Product[] = plainToClass(Product, rows,
-            {excludeExtraneousValues: true}
-        );
-
-        return Promise.resolve(products);
+        return this._prismaClient.product.findMany();
     }
 
     async update(id: number, product: Product): Promise<Product> {
 
-        const sql = `UPDATE products SET ? WHERE id = ?`;
-
-         await Pool.query<ResultSetHeader>(sql, [(_.omit(product, ['id', 'createdAt', 'updatedAt'])), id]);
-
-        const prod: Product = await this.findOne(id);
-
-        return Promise.resolve(prod);
+        return this._prismaClient.product.update({
+            where: {id: id},
+            data: (_.omit(product, ['id', 'createdAt', 'updatedAt']))
+        });
     }
 
 
