@@ -1,7 +1,7 @@
 import {IsNotEmpty, IsNumber, IsString, IsUUID} from "class-validator";
-import OrderRequestDto from "./OrderRequestDto";
+import CartRequestDto from "./CartRequestDto";
 
-export default class OrderResponseDto extends OrderRequestDto {
+export default class CartResponseDto extends CartRequestDto {
     @IsNotEmpty()
     id!: number;
 }

@@ -12,9 +12,7 @@ export default class CartServiceImpl implements CartService {
 
     private _cartRepository: ICartRepository;
 
-    constructor(
-        @inject(IOC.CartRepository) cartRepository: ICartRepository
-    ) {
+    constructor(@inject(IOC.CartRepository) cartRepository: ICartRepository) {
         this._cartRepository = cartRepository;
     }
 
