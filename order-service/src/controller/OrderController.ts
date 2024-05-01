@@ -4,7 +4,7 @@ import {RequestValidator} from "../utils/RequestValidator"
 import OrderRequestDto from "../domain/dto/OrderRequestDto";
 import HttpStatus from "http-status";
 import {inject, injectable} from "inversify";
-import {IOC} from "../domain/inversify/inversify.ioc.types";
+import {IOC} from "../inversify/inversify.ioc.types";
 import OrderService from "../service/OrderService";
 
 

@@ -2,7 +2,7 @@ import OrderService from "../../service/OrderService";
 import {inject, injectable} from "inversify";
 import OrderRequestDto from "../dto/OrderRequestDto";
 import OrderResponseDto from "../dto/OrderResponseDto";
-import {IOC} from "../inversify/inversify.ioc.types";
+import {IOC} from "../../inversify/inversify.ioc.types";
 import IOrderRepository from "../../repository/IOrderRepository";
 import {plainToClass} from "class-transformer"
 import {Order} from "../model/Order";

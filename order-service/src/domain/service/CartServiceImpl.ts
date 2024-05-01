@@ -2,7 +2,7 @@ import CartService from "../../service/CartService";
 import {inject, injectable} from "inversify";
 import CartRequestDto from "../dto/CartRequestDto";
 import CartResponseDto from "../dto/CartResponseDto";
-import {IOC} from "../inversify/inversify.ioc.types";
+import {IOC} from "../../inversify/inversify.ioc.types";
 import ICartRepository from "../../repository/ICartRepository";
 import {plainToClass} from "class-transformer"
 import {Cart} from "../model/Cart";
