@@ -1,6 +1,7 @@
 import IOrderRepository from "../IOrderRepository";
 import {Order} from "../../domain/model/Order";
 import {inject, injectable} from "inversify";
+import {elasticClient} from "../../domain/elasticsearch/elasticsearch.client";
 import _ from "lodash"
 
 

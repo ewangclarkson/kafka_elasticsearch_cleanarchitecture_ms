@@ -4,6 +4,8 @@
     "port": 8002
   },
   "database": {
+  },
+  "elasticSearch": {
+    "host":"https://172.18.0.1:9200"
   }
-
 }

@@ -2,6 +2,7 @@ import ICartRepository from "../ICartRepository";
 import {Cart} from "../../domain/model/Cart";
 import {inject, injectable} from "inversify";
 import _ from "lodash"
+import {elasticClient} from "../../domain/elasticsearch/elasticsearch.client";
 
 
 @injectable()
