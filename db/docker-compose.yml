@@ -5,12 +5,27 @@ services:
     container_name: PostgresCont
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres123
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
     ports:
       - '5432:5432'
     volumes:
       - postgres_db:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql123
+    volumes:
+      - mysql_db:/var/lib/mysql
+    ports:
+      - '3307:3306'
+
 volumes:
   postgres_db:
+    driver: local
+  mysql_db:
     driver: local
