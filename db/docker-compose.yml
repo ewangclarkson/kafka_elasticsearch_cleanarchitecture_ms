@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  postgres_db:
+  postgresdb:
     image: postgres:latest
     container_name: PostgresCont
     restart: always
@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_db:/var/lib/postgresql/data
 
-  mysql:
+  mysqldb:
     image: mysql:8.0
     container_name: mysql
     restart: always
