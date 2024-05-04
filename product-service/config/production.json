@@ -4,6 +4,9 @@
     "port": 8001
   },
   "database": {
+    "host": "postgresdb",
+    "user": "postgres",
+    "name": "codewithjay"
   }
 
 }

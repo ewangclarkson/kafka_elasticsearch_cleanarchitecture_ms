@@ -4,8 +4,8 @@
     "port": 8001
   },
   "database": {
-    "host": "localhost",
-    "user": "root",
+    "host": "postgresdb",
+    "user": "postgres",
     "name": "codewithjay"
   }
 }
