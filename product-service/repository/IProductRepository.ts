@@ -4,13 +4,13 @@ export default interface IProductRepository {
 
     create(product: Product): Promise<Product>;
 
-    update(id: number, product: Product): Promise<Product>;
+    update(id: string, product: Product): Promise<Product>;
 
-    findOne(id: number): Promise<Product | null>;
+    findOne(id: string): Promise<Product | null>;
 
     find(): Promise<Product[]>;
 
-    delete(id: number): Promise<Product>;
+    delete(id: string): Promise<Product>;
 
 
 }

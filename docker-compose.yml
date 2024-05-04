@@ -60,10 +60,8 @@ services:
     ports:
       - 8000:80
     depends_on:
-      - package-service
-      - user-service
-      - delivery-service
-      - web
+      - product-service
+      - order-service
     networks:
       - kafka_es_ms_network
 

@@ -26,14 +26,14 @@ export default class ProductRepository implements IProductRepository {
         });
     }
 
-    async delete(id: number): Promise<Product> {
+    async delete(id: string): Promise<Product> {
 
         return this._prismaClient.product.delete({
             where: {id: id}
         });
     }
 
-    async findOne(id: number): Promise<Product | null> {
+    async findOne(id: string): Promise<Product | null> {
 
          return  this._prismaClient.product.findFirst({
             where: {id: id}
@@ -45,7 +45,7 @@ export default class ProductRepository implements IProductRepository {
         return this._prismaClient.product.findMany();
     }
 
-    async update(id: number, product: Product): Promise<Product> {
+    async update(id: string, product: Product): Promise<Product> {
 
         return this._prismaClient.product.update({
             where: {id: id},

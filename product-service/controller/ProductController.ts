@@ -35,16 +35,16 @@ export default class ProductController {
 
         if (errors) return response.status(HttpStatus.BAD_REQUEST).send(errors);
 
-        const product = await this._productService.getProduct(parseInt(request.params.id));
+        const product = await this._productService.getProduct(request.params.id);
         if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
-        const savedProduct: ProductResponseDto = await this._productService.updateProduct(parseInt(request.params.id), input);
+        const savedProduct: ProductResponseDto = await this._productService.updateProduct(request.params.id, input);
 
         return response.status(HttpStatus.OK).send(savedProduct);
     }
 
     async getProduct(request: Request, response: Response, next: NextFunction) {
-        const product = await this._productService.getProduct(parseInt(request.params.id));
+        const product = await this._productService.getProduct(request.params.id);
         if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
         return response.status(HttpStatus.OK).send(product);
@@ -57,10 +57,10 @@ export default class ProductController {
     }
 
     async deleteProduct(request: Request, response: Response, next: NextFunction) {
-        const product = await this._productService.getProduct(parseInt(request.params.id));
+        const product = await this._productService.getProduct(request.params.id);
         if (!product) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
-        await this._productService.deleteProduct(parseInt(request.params.id));
+        await this._productService.deleteProduct(request.params.id);
 
         return response.status(HttpStatus.OK).send(product);
     }

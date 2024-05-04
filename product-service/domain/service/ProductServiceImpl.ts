@@ -22,12 +22,12 @@ export default class ProductServiceImpl implements ProductService {
         return this._productRepository.create(plainToClass(Product, productRequestDto));
     }
 
-    async deleteProduct(id: number): Promise<ProductResponseDto> {
+    async deleteProduct(id: string): Promise<ProductResponseDto> {
         const product = await this._productRepository.delete(id);
         return plainToClass(ProductResponseDto, product);
     }
 
-    async getProduct(id: number): Promise<ProductResponseDto | null> {
+    async getProduct(id: string): Promise<ProductResponseDto | null> {
         const product = await this._productRepository.findOne(id);
         if(!product) return Promise.resolve(product);
         return plainToClass(ProductResponseDto, product);
@@ -38,7 +38,7 @@ export default class ProductServiceImpl implements ProductService {
         return plainToClass(ProductResponseDto, products);
     }
 
-    async updateProduct(id: number, updateRequestDto: ProductRequestDto): Promise<ProductResponseDto> {
+    async updateProduct(id: string, updateRequestDto: ProductRequestDto): Promise<ProductResponseDto> {
         const product = await this._productRepository.update(id, plainToClass(Product, updateRequestDto));
         return plainToClass(ProductResponseDto, product)
     }

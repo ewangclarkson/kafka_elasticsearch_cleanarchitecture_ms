@@ -3,5 +3,6 @@ import ProductRequestDto from "./ProductRequestDto";
 
 export default class ProductResponseDto extends ProductRequestDto {
     @IsNotEmpty()
-    id!: number;
+    @IsUUID('4')
+    id!: string;
 }
