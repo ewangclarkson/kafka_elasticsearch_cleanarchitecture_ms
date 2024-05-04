@@ -7,7 +7,7 @@
     "host": "mysqldb",
     "port": 3307,
     "username": "mysql",
-    "name": "codewithjay"
+    "name": "ecommerce"
   },
   "elasticSearch": {
     "host":"https://172.18.0.1:9200"

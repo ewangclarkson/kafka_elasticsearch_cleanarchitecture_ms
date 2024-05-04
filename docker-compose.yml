@@ -11,6 +11,8 @@ services:
       - '5432:5432'
     volumes:
       - postgres_db:/var/lib/postgresql/data
+    networks:
+      - kafka_es_ms_network
 
   mysqldb:
     image: mysql:latest
@@ -23,6 +25,22 @@ services:
       - mysql_db:/var/lib/mysql
     ports:
       - '3307:3306'
+    networks:
+      - kafka_es_ms_network
+
+  mongodb:
+    image: mongo
+    container_name: mongo
+      restart: always
+      environment:
+        MONGO_USER: mongo
+        MONGO_PASSWORD: mongo123
+    ports:
+      - 27018:27017
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - kafka_es_ms_network
 
   product-service:
     build:
@@ -53,6 +71,20 @@ services:
     networks:
       - kafka_es_ms_network
 
+  payment-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./payment-service
+    ports:
+      - 8003:8003
+    depends_on:
+      - mongodb
+    environment:
+      DB_PASSWORD: mongo123
+      NODE_ENV: development
+    networks:
+      - kafka_es_ms_network
+
   api-gateway:
     build:
       dockerfile: Dockerfile
@@ -62,6 +94,7 @@ services:
     depends_on:
       - product-service
       - order-service
+      - payment-service
     networks:
       - kafka_es_ms_network
 

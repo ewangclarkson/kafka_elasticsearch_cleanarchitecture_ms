@@ -6,6 +6,6 @@
   "database": {
     "host": "postgresdb",
     "user": "postgres",
-    "name": "codewithjay"
+    "name": "ecommerce"
   }
 }

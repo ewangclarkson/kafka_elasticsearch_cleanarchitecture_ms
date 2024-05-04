@@ -2,7 +2,7 @@ import ProductService from "../../service/ProductService";
 import {inject, injectable} from "inversify";
 import ProductRequestDto from "../dto/ProductRequestDto";
 import ProductResponseDto from "../dto/ProductResponseDto";
-import {IOC} from "../../inversify/inversify.ioc.types";
+import {IOC} from "../../ioc/inversify.inversify.types";
 import IProductRepository from "../../repository/IProductRepository";
 import {plainToClass} from "class-transformer"
 import {Product} from "../model/Product";

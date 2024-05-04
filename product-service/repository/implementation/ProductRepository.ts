@@ -6,7 +6,7 @@ import {plainToClass} from "class-transformer";
 import {RowDataPacket, ResultSetHeader} from "mysql2";
 import _ from "lodash"
 import ProductService from "../../service/ProductService";
-import {IOC} from "../../inversify/inversify.ioc.types";
+import {IOC} from "../../ioc/inversify.inversify.types";
 import {PrismaClient} from "@prisma/client";
 
 

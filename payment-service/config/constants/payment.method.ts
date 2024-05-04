@@ -1,0 +1,5 @@
+export enum PaymentChannel {
+    MTN_MOBILE_MONEY="MTN_MOBILE_MONEY",
+    ORANGE_MONEY="ORANGE_MONEY",
+    VISA_CARD="VISA_CARD"
+}

@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "Order Service - Clean Architecture",
-    "port": 8001
+    "name": "Payment Service - Clean Architecture",
+    "port": 8003
   },
   "database": {
-    "host": "mysqldb",
+    "host": "mongodb",
     "port": 3307,
-    "username": "mysql",
+    "username": "mongodb",
     "name": "ecommerce"
   },
   "elasticSearch": {
