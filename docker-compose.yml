@@ -1,80 +1,58 @@
+version: '3.8'
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    hostname: my-rabbit
+  postgresdb:
+    image: postgres:latest
+    container_name: PostgresCont
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
     ports:
-      - 5672:5672
-      - 15672:15672
-    networks:
-      - package-tracker-network
-  mongodb:
-    image: mongo
-    ports:
-      - 27018:27017
+      - '5432:5432'
     volumes:
-      - mongo-data:/data/db
-    networks:
-      - package-tracker-network
-  package-service:
+      - postgres_db:/var/lib/postgresql/data
+
+  mysqldb:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql123
+    volumes:
+      - mysql_db:/var/lib/mysql
+    ports:
+      - '3307:3306'
+
+  product-service:
     build:
       dockerfile: Dockerfile
-      context: ./package-service
+      context: ./product-service
     ports:
       - 8001:8001
     depends_on:
-      - mongodb
+      - postgresdb
     environment:
-      - jwt_private_key=5111d89f-dde5
-      - loggly_token=5111d89f-dde5-4214-9e1e-00de70939e44
-      - amqp_password=7WYPz419s9eaNMWKy7RRfAx5-59UMTp2
-      - db_connection_url=mongodb://mongodb:27017/superapp
-      - NODE_ENV=development
+      DB_PASSWORD: postgres123
+      NODE_ENV: development
     networks:
-      - package-tracker-network
-  delivery-service:
+      - kafka_es_ms_network
+
+  order-service:
     build:
       dockerfile: Dockerfile
-      context: ./delivery-service
+      context: ./order-service
     ports:
       - 8002:8002
     depends_on:
-      - mongodb
+      - mysqldb
     environment:
-      - jwt_private_key=5111d89f-dde5
-      - loggly_token=5111d89f-dde5-4214-9e1e-00de70939e44
-      - amqp_password=7WYPz419s9eaNMWKy7RRfAx5-59UMTp2
-      - db_connection_url=mongodb://mongodb:27017/superapp
-      - NODE_ENV=development
+      DB_PASSWORD: mysql123
+      NODE_ENV: development
+      API_KEY: S3N3cU5ZOEJYWHFUN2RPQVZacF86YXl1M2NuSjNSNGE2bHZGSHFiR2h1Zw
     networks:
-      - package-tracker-network
-  user-service:
-    build:
-      dockerfile: Dockerfile
-      context: ./user-service
-    ports:
-      - 8003:8003
-    depends_on:
-      - mongodb
-    environment:
-      - jwt_private_key=5111d89f-dde5
-      - loggly_token=5111d89f-dde5-4214-9e1e-00de70939e44
-      - amqp_password=7WYPz419s9eaNMWKy7RRfAx5-59UMTp2
-      - db_connection_url=mongodb://mongodb:27017/superapp
-      - bcrypt_salt=10
-      - NODE_ENV=development
-    networks:
-      - package-tracker-network
-  web:
-    build:
-      dockerfile: Dockerfile
-      context: ./web
-    ports:
-      - 4200:4200
-    environment:
-      - NODE_ENV=dev
-    networks:
-      - package-tracker-network
+      - kafka_es_ms_network
+
   api-gateway:
     build:
       dockerfile: Dockerfile
@@ -87,10 +65,11 @@ services:
       - delivery-service
       - web
     networks:
-      - package-tracker-network
+      - kafka_es_ms_network
 
 networks:
-  package-tracker-network:
+  kafka_es_ms_network:
 
 volumes:
-  mongo-data:
+  postgres_db:
+  mysql_db:

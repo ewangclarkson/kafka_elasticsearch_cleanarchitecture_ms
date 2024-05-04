@@ -2,7 +2,7 @@ import express, {Application} from "express";
 import "reflect-metadata";
 import {startApplication} from "./startup/boot";
 import config from "config"
-import {AppDataSource} from "./my-project/src/data-source";
+import {AppDataSource} from "./startup/database";
 
 const app: Application = express();
 

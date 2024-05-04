@@ -38,7 +38,7 @@ export default class CartServiceImpl implements CartService {
     }
 
     async updateCart(id: string, updateCartRequestDto: CartRequestDto): Promise<CartResponseDto> {
-        const cart = plainToClass(Cart, updateRequestDto);
+        const cart = plainToClass(Cart, updateCartRequestDto);
         const cartRes = await this._cartRepository.update(id, cart);
 
         return plainToClass(CartResponseDto, cartRes);

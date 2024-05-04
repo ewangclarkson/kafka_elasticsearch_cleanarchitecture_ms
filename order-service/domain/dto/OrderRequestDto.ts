@@ -1,9 +1,9 @@
-import {IsEnum, IsNotEmpty, IsNumber, IsString, isUUID} from "class-validator";
+import {IsEnum, IsNotEmpty, IsNumber, IsString, IsUUID} from "class-validator";
 import {PaymentChannel} from "../../config/constants/payment.method";
 import {PaymentStatus} from "../../config/constants/payment.status";
 
 export default class OrderRequestDto {
-    @isUUID('4')
+    @IsUUID('4')
     @IsNotEmpty()
     customerId!: string;
     @IsString()

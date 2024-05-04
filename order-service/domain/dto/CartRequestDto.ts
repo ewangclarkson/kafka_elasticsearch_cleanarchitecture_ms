@@ -9,7 +9,7 @@ export default class CartRequestDto {
     productId!: string;
     @IsNumber()
     @IsNotEmpty()
-    quantity!: number
+    quantity!: number;
     @IsString()
     @IsNotEmpty()
     date!: string

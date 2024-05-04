@@ -1,8 +1,8 @@
-import {IsNotEmpty, isUUID} from "class-validator";
+import {IsNotEmpty, IsUUID} from "class-validator";
 import CartRequestDto from "./CartRequestDto";
 
 export default class CartResponseDto extends CartRequestDto {
     @IsNotEmpty()
-    @isUUID('4')
+    @IsUUID('4')
     id!: string;
 }

@@ -3,8 +3,8 @@ import {Cart} from "../../domain/model/Cart";
 import {injectable} from "inversify";
 import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
+import {plainToClass} from "class-transformer";
 import _ from "lodash";
-
 
 @injectable()
 export default class CartRepository implements ICartRepository {
@@ -17,7 +17,7 @@ export default class CartRepository implements ICartRepository {
         await elasticClient
             .index({
                 index: ElasticIndices.CARTS,
-                id: cart.id,
+                id: cart.id!,
                 document: cart
             });
 
@@ -31,11 +31,11 @@ export default class CartRepository implements ICartRepository {
         await Cart.delete(id);
         await elasticClient
             .delete({
-                id: cart.id,
+                id: id,
                 index: ElasticIndices.CARTS,
             });
 
-        return Promise.resolve(cart);
+        return Promise.resolve(cart!);
     }
 
     async findOne(id: string): Promise<Cart | null> {
@@ -45,21 +45,21 @@ export default class CartRepository implements ICartRepository {
                 index: ElasticIndices.CARTS,
             });
 
-        return Promise.resolve(cart._source);
+        return Promise.resolve(cart._source!);
     }
 
     async find(): Promise<Cart[]> {
+        const body = await elasticClient.mget<Cart>({
+            index: ElasticIndices.CARTS,
+            body: {
+                docs: [{_id: '_all'}],
+            },
+        });
 
-        const {body} = await elasticClient
-            .mget<Cart>({
-                index: ElasticIndices.CARTS,
-                body: {
-                    docs: [{_id: '_all'}],
-                },
-            });
-        const carts = body.docs;
-
-        return Promise.resolve(_.pick(carts, ['_source']));
+        const carts= body.docs.map((document) => {
+            return plainToClass(Cart, _.omit(document,['_source']));
+        });
+        return Promise.resolve(carts);
     }
 
     async update(id: string, cart: Cart): Promise<Cart | null> {

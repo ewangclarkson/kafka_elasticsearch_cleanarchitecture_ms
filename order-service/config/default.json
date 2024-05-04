@@ -4,9 +4,9 @@
     "port": 8002
   },
   "database": {
-    "host": "localhost",
+    "host": "mysqldb",
     "port": 3307,
-    "username": "root",
+    "username": "mysql",
     "name": "codewithjay"
   },
   "elasticSearch": {
