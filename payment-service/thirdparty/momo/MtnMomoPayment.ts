@@ -8,6 +8,9 @@ import {inject, injectable} from "inversify";
 import ProviderResponse from "../ProviderResponse";
 import {PaymentStatus} from "../../config/constants/payment.status";
 import {plainToClass} from "class-transformer";
+import {KAFKARequest} from "../../domain/service/kafka.broker";
+import {KafkaTopics} from "../../config/constants/kafka.topics";
+import KafkaPayload from "../../domain/dto/KafkaPayload";
 
 @injectable()
 export default class MtnMomoPayment implements PaymentInterface {
@@ -32,10 +35,30 @@ export default class MtnMomoPayment implements PaymentInterface {
         if (payment) {
             if (paymentResponseDto.paymentStatus === PaymentStatus.COMPLETED) {
                 payment.paymentStatus = PaymentStatus.COMPLETED;
-                payment=await this._paymentRepository.update(payment.id, payment);
+                await this._paymentRepository.update(payment.id, payment);
+                await KAFKARequest(KafkaTopics.ORDER_TOPIC, plainToClass(KafkaPayload, {
+                    payload: {
+                        paymentStatus: PaymentStatus.COMPLETED,
+                        orderId: payment.orderId
+                    },
+                    correlationId: null,
+                    replyTo: null,
+                    incoming: KafkaTopics.PAYMENT_TOPIC
+                }));
+
             } else {
                 payment.paymentStatus = PaymentStatus.FAILED;
-                payment = await this._paymentRepository.update(payment.id, payment);
+                await this._paymentRepository.update(payment.id, payment);
+                await KAFKARequest(KafkaTopics.ORDER_TOPIC, plainToClass(KafkaPayload, {
+                    payload: {
+                        paymentStatus: PaymentStatus.FAILED,
+                        orderId: payment.orderId
+                    },
+                    correlationId: null,
+                    replyTo: null,
+                    incoming: KafkaTopics.PAYMENT_TOPIC
+                }));
+
             }
         }
         return Promise.resolve(plainToClass(PaymentResponseDto, payment, {excludeExtraneousValues: true}));
