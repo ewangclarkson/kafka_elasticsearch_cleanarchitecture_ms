@@ -11,5 +11,8 @@
   },
   "elasticSearch": {
     "host": "https://172.18.0.1:9200"
+  },
+  "kafka": {
+    "brokers": "http:/localhost:9092"
   }
 }
