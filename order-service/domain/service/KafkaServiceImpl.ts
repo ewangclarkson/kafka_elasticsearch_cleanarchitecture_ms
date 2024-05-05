@@ -43,7 +43,7 @@ export default class KafkaServiceImpl implements KafkaService {
                     });
                 } else {
                     if (request.incoming === KafkaTopics.PAYMENT_TOPIC) {
-                        const payload = request.data;
+                        const payload = request.payload;
                         const order: Order | null = await this._orderRepository.findOne(payload.orderId);
                         if (order) {
                             order.orderStatus = payload.paymentStatus;

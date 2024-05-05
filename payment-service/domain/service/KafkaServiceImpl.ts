@@ -37,7 +37,7 @@ export default class KafkaServiceImpl implements KafkaService {
                             const response = JSON.parse(message.value?.toString() || '');
                             if (response.correlationId) {
                                 (response.correlationId === payload.correlationId)
-                                    ? resolve(response.data)
+                                    ? resolve(response.payload)
                                     : reject("Failed to get data");
                             } else {
                                 reject("Failed to get data");
