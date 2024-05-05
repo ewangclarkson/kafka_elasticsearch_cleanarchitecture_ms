@@ -4,7 +4,8 @@ const IOC = {
     OrderController: Symbol.for("OrderController"),
     CartRepository: Symbol.for("CartRepository"),
     CartService: Symbol.for("CartService"),
-    CartController: Symbol.for("CartController")
+    CartController: Symbol.for("CartController"),
+    KafkaService: Symbol.for("KafkaService")
 };
 
 export { IOC };

@@ -3,11 +3,13 @@ import "reflect-metadata";
 import {startApplication} from "./startup/boot";
 import config from "config"
 import {AppDataSource} from "./startup/database";
-import {KAFKAObserver} from "./domain/service/kafka.broker";
+import KafkaService from "./service/KafkaService";
 import {KafkaTopics} from "./config/constants/kafka.topics";
+import {container} from "./inversify/inversify.ioc.config";
+import {IOC} from "./inversify/inversify.ioc.types";
 
 const app: Application = express();
-
+const kafkaService: KafkaService = container.get<KafkaService>(IOC.KafkaService);
 
 const startServer = function () {
 
@@ -17,7 +19,7 @@ const startServer = function () {
 
     startApplication(app);
 
-    KAFKAObserver(KafkaTopics.ORDER_TOPIC)
+    kafkaService.kafkaObserver(KafkaTopics.ORDER_TOPIC)
         .then(() => console.log("consume success"))
         .catch((err) => console.log(err));
 

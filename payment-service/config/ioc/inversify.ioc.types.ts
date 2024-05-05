@@ -5,7 +5,8 @@ const IOC = {
     ProviderStrategy: Symbol.for("ProviderStrategy"),
     MtnMomoPayment: Symbol.for("MtnMomoPayment"),
     OrangePayment: Symbol.for("OrangePayment"),
-    VisaPayment: Symbol.for("VisaPayment")
+    VisaPayment: Symbol.for("VisaPayment"),
+    KafkaService: Symbol.for("KafkaService")
 };
 
 export { IOC };

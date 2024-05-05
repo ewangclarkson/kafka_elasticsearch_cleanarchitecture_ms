@@ -27,7 +27,7 @@ export default class PaymentServiceImpl implements PaymentService {
     async makePayment(paymentRequestDto: PaymentRequestDto): Promise<void> {
         const payment = await this._paymentRepository.create(plainToClass(Payment, paymentRequestDto));
 
-        const process: ProviderStrategy = await this._providerStrategy.getThirdPartyPaymentInstance(paymentRequestDto.paymentChannel);
+        const process: ProviderStrategy = await this._providerStrategy.getThirdPartyPaymentProvider(paymentRequestDto.paymentChannel);
         const providerRequest: ProviderRequest = plainToClass(ProviderRequest, payment, {excludeExtraneousValues: true});
         await process.strategy.processPayment(providerRequest);
 
@@ -38,7 +38,7 @@ export default class PaymentServiceImpl implements PaymentService {
     async completePayment(completePaymentRequestDto: ProviderResponse): Promise<PaymentResponseDto> {
         let payment: Payment | null = await this._paymentRepository.findOne(completePaymentRequestDto.processingNumber);
         if (payment) {
-            const process: ProviderStrategy = await this._providerStrategy.getThirdPartyPaymentInstance(completePaymentRequestDto.paymentChannel);
+            const process: ProviderStrategy = await this._providerStrategy.getThirdPartyPaymentProvider(completePaymentRequestDto.paymentChannel);
             const paymentRes = await process.strategy.handlePaymentResponse(completePaymentRequestDto);
 
             return Promise.resolve(paymentRes);

@@ -5,18 +5,21 @@ import {inject, injectable} from "inversify";
 import {IOC} from "../../config/ioc/inversify.ioc.types";
 import ProviderRequest from "../provider.request";
 import ProviderResponse from "../ProviderResponse";
-import {PaymentStatus} from "../../config/constants/payment.status";
 import {plainToClass} from "class-transformer";
-import {KAFKARequest} from "../../domain/service/kafka.broker";
 import {KafkaTopics} from "../../config/constants/kafka.topics";
 import KafkaPayload from "../../domain/dto/KafkaPayload";
+import KafkaService from "../../service/KafkaService";
 
 @injectable()
 export default class OrangeMomoPayment implements PaymentInterface {
     private _paymentRepository: IPaymentRepository;
+    private _kafkaService: KafkaService;
 
-    constructor(@inject(IOC.PaymentRepository) paymentRepository: IPaymentRepository) {
+    constructor(
+        @inject(IOC.PaymentRepository) paymentRepository: IPaymentRepository,
+        @inject(IOC.KafkaService) kafkaService: KafkaService) {
         this._paymentRepository = paymentRepository;
+        this._kafkaService = kafkaService;
     }
 
     async processPayment(paymentRequest: ProviderRequest): Promise<void> {
@@ -34,7 +37,7 @@ export default class OrangeMomoPayment implements PaymentInterface {
         if (payment) {
             payment.paymentStatus = paymentResponseDto.paymentStatus;
             await this._paymentRepository.update(payment.id, payment);
-            await KAFKARequest(KafkaTopics.ORDER_TOPIC, plainToClass(KafkaPayload, {
+            await this._kafkaService.kafkaRequest(KafkaTopics.ORDER_TOPIC, plainToClass(KafkaPayload, {
                 payload: {
                     paymentStatus: paymentResponseDto.paymentStatus,
                     orderId: payment.orderId

@@ -10,6 +10,8 @@ import OrderRepository from "../repository/implementation/OrderRepository";
 import OrderService from "../service/OrderService";
 import OrderServiceImpl from "../domain/service/OrderServiceImpl";
 import OrderController from "../controller/OrderController";
+import KafkaService from "../service/KafkaService";
+import KafkaServiceImpl from "../domain/service/KafkaServiceImpl";
 
 
 const container = new Container();
@@ -18,6 +20,7 @@ container.bind<CartService>(IOC.CartService).to(CartServiceImpl);
 
 container.bind<IOrderRepository>(IOC.OrderRepository).to(OrderRepository);
 container.bind<OrderService>(IOC.OrderService).to(OrderServiceImpl);
+container.bind<KafkaService>(IOC.KafkaService).to(KafkaServiceImpl);
 
 container.bind(IOC.OrderController).to(OrderController);
 container.bind(IOC.CartController).to(CartController);

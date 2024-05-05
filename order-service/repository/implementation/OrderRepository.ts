@@ -5,13 +5,21 @@ import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
 import _ from "lodash";
 import {plainToClass} from "class-transformer";
+import {PaymentStatus} from "../../config/constants/payment.status";
 
 @injectable()
 export default class OrderRepository implements IOrderRepository {
 
+    /**
+     * There will be the need for another table to store the list of items bought
+     * But this is ommitted at the moment since we are only dealing with a prove of concept
+     * And not the actual full ecommerce implementation
+     * @param order
+     */
 
     async create(order: Order): Promise<Order> {
 
+        order.orderStatus = PaymentStatus.PENDING;
         order = await Order.save(order);
 
         // add the data to elastic search

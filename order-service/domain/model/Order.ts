@@ -1,5 +1,4 @@
 import {Expose} from "class-transformer"
-import {PaymentChannel} from "../../config/constants/payment.method";
 import {PaymentStatus} from "../../config/constants/payment.status";
 import {BaseEntity, Column, Entity, Generated, PrimaryColumn} from "typeorm";
 
@@ -29,8 +28,5 @@ export class Order extends BaseEntity {
     billingAddress!: string;
     @Expose()
     @Column()
-    paymentChannel!: PaymentChannel;
-    @Expose()
-    @Column()
-    paymentStatus!: PaymentStatus;
+    orderStatus!: PaymentStatus;
 }
