@@ -2,7 +2,7 @@ import {Order} from "../domain/model/Order";
 
 export default interface IOrderRepository {
 
-    create(product: Order): Promise<Order>;
+    create(order: Order): Promise<Order>;
 
     findOne(id: string): Promise<Order | null>;
 
@@ -10,5 +10,6 @@ export default interface IOrderRepository {
 
     delete(id: string): Promise<Order>;
 
+    update(id:string,order: Order): Promise<Order>;
 
 }

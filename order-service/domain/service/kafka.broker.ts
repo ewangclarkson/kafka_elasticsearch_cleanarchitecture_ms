@@ -1,10 +1,10 @@
 import {Consumer, EachMessagePayload, Kafka, Producer} from 'kafkajs';
 import {KafkaTopics} from "../../config/constants/kafka.topics";
 import config from "config";
-import {PaymentStatus} from "../../config/constants/payment.status";
 import IOrderRepository from "../../repository/IOrderRepository";
 import {container} from "../../inversify/inversify.ioc.config";
 import {IOC} from "../../inversify/inversify.ioc.types";
+import {Order} from "../model/Order";
 
 
 const kafka = new Kafka({
@@ -27,8 +27,8 @@ export const KAFKAObserver = async (KAFKA_TOPIC: KafkaTopics) => {
             const request = JSON.parse(message.value?.toString() || '');
             if (request.correlationId) {
                 //perform db operation
-                const response ={
-                    payload:""
+                const response = {
+                    payload: ""
                 };
                 await producer.send({
                     topic: request.replyTo,
@@ -38,8 +38,10 @@ export const KAFKAObserver = async (KAFKA_TOPIC: KafkaTopics) => {
                 if (request.incoming === KafkaTopics.PAYMENT_TOPIC) {
                     const payload = request.data;
                     const orderRepository = container.get<IOrderRepository>(IOC.OrderRepository);
-                    if (payload.paymentStatus == PaymentStatus.FAILED) {
-                        await orderRepository.delete(payload.orderId);
+                    const order: Order | null = await orderRepository.findOne(payload.orderId);
+                    if (order) {
+                        order.paymentStatus = payload.paymentStatus;
+                        await orderRepository.update(order.id, order);
                     }
                 }
             }

@@ -5,7 +5,6 @@ import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
 import _ from "lodash";
 import {plainToClass} from "class-transformer";
-import {Cart} from "../../domain/model/Cart";
 
 @injectable()
 export default class OrderRepository implements IOrderRepository {
@@ -60,11 +59,22 @@ export default class OrderRepository implements IOrderRepository {
                 },
             });
 
-        const orders= body.docs.map((document) => {
-            return plainToClass(Order, _.omit(document,['_source']));
+        const orders = body.docs.map((document) => {
+            return plainToClass(Order, _.omit(document, ['_source']));
         });
 
         return Promise.resolve(orders);
+    }
+
+    async update(id: string, order: Order): Promise<Order> {
+        order = await Order.save(order);
+        await elasticClient
+            .update({
+                index: ElasticIndices.ORDERS,
+                id: id,
+                doc: order
+            });
+        return Promise.resolve(order);
     }
 
 }
