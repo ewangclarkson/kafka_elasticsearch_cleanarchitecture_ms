@@ -3,7 +3,6 @@ import {Order} from "../../domain/model/Order";
 import {injectable} from "inversify";
 import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
-import _ from "lodash";
 import {plainToClass} from "class-transformer";
 import {PaymentStatus} from "../../config/constants/payment.status";
 
@@ -60,15 +59,13 @@ export default class OrderRepository implements IOrderRepository {
     async find(): Promise<Order[]> {
 
         const body = await elasticClient
-            .mget<Order>({
+            .search({
                 index: ElasticIndices.ORDERS,
-                body: {
-                    docs: [{_id: '_all'}],
-                },
+                query: {match_all: {}}
             });
 
-        const orders = body.docs.map((document) => {
-            return plainToClass(Order, _.omit(document, ['_source']));
+        const orders = body.hits.hits.map((document) => {
+            return plainToClass(Order, document._source);
         });
 
         return Promise.resolve(orders);

@@ -5,6 +5,7 @@ import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
 import {plainToClass} from "class-transformer";
 import _ from "lodash";
+import {Order} from "../../domain/model/Order";
 
 @injectable()
 export default class CartRepository implements ICartRepository {
@@ -49,15 +50,14 @@ export default class CartRepository implements ICartRepository {
     }
 
     async find(): Promise<Cart[]> {
-        const body = await elasticClient.mget<Cart>({
-            index: ElasticIndices.CARTS,
-            body: {
-                docs: [{_id: '_all'}],
-            },
-        });
+        const body = await elasticClient
+            .search({
+                index: ElasticIndices.CARTS,
+                query: {match_all: {}}
+            });
 
-        const carts= body.docs.map((document) => {
-            return plainToClass(Cart, _.omit(document,['_source']));
+        const carts = body.hits.hits.map((document) => {
+            return plainToClass(Cart, document._source);
         });
         return Promise.resolve(carts);
     }
