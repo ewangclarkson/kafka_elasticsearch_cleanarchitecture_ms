@@ -1,4 +1,4 @@
 export enum ElasticIndices {
-    ORDERS = "KF_ES_MS_orders",
-    CARTS = "KF_ES_MS_carts"
+    ORDERS = "kf_es_ms_orders",
+    CARTS = "kf_es_ms_carts"
 }

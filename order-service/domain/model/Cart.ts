@@ -1,17 +1,16 @@
 import {Expose} from "class-transformer";
-import {BaseEntity, Column, Entity, Generated, PrimaryColumn} from "typeorm";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 
 @Entity()
 export class Cart extends BaseEntity {
     @Expose()
-    @PrimaryColumn('uuid', {default: () => 'uuid_generate_v4()'})
-    @Generated('uuid')
+    @PrimaryGeneratedColumn("uuid")
     id!: string;
 
     @Expose()
     @Column()
-    customerId!: number;
+    customerId!: string;
 
     @Expose()
     @Column()
@@ -23,5 +22,5 @@ export class Cart extends BaseEntity {
 
     @Expose()
     @Column()
-    date!: string
+    date!: string;
 }

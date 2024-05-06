@@ -42,7 +42,8 @@ export default class KafkaServiceImpl implements KafkaService {
                         messages: [{value: JSON.stringify(response)}],
                     });
                 } else {
-                    if (request.incoming === KafkaTopics.PAYMENT_TOPIC) {
+
+                    if (request.incoming == KafkaTopics.PAYMENT_TOPIC) {
                         const payload = request.payload;
                         const order: Order | null = await this._orderRepository.findOne(payload.orderId);
                         if (order) {

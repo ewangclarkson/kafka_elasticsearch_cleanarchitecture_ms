@@ -44,7 +44,7 @@ export default class CartController {
     }
 
     async deleteCartDetail(request: Request, response: Response, next: NextFunction) {
-        const cart = await this._cartService.deleteCartDetail(request.params.id);
+        const cart = await this._cartService.getCartDetail(request.params.id);
         if (!cart) return response.status(HttpStatus.NOT_FOUND).send(HttpStatus[`${HttpStatus.NOT_FOUND}_MESSAGE`]);
 
         await this._cartService.deleteCartDetail(request.params.id);

@@ -3,6 +3,7 @@
     "password": "db_password"
   },
   "elasticSearch": {
-    "apiKey": "api_key"//Q09OWlM0OEI4bmJhUFhzeEpXelY6bVZQcGJURV9TQzJTNVcySTUyNnRLdw==
+    "cloudId": "cloud_id",//4748882a49494f44b9d08c3cb8cf8222:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDg4MzBiYzlmMGY1YTRhZjhiOTBkNTg3MzBhZGQ2NzNmJGZhMmVmMDk4YjRkNTQzODE5NzcxNzQ4ZjI5ODNlZTEw
+    "password": "elastic_password"
   }
 }

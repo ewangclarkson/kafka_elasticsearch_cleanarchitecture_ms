@@ -46,29 +46,33 @@ export default class OrderRepository implements IOrderRepository {
     }
 
     async findOne(id: string): Promise<Order | null> {
-        const order = await elasticClient
-            .get<Order>({
-                id: id,
-                index: ElasticIndices.ORDERS,
-            });
+        try {
+            const order = await elasticClient
+                .get<Order>({
+                    id: id,
+                    index: ElasticIndices.ORDERS,
+                });
 
-        return Promise.resolve(order._source!);
+            return Promise.resolve(order._source!);
+        }catch (e) {
+            return Promise.resolve(null);
+        }
 
     }
 
     async find(): Promise<Order[]> {
 
-        const body = await elasticClient
-            .search({
-                index: ElasticIndices.ORDERS,
-                query: {match_all: {}}
+            const body = await elasticClient
+                .search({
+                    index: ElasticIndices.ORDERS,
+                    query: {match_all: {}}
+                });
+
+            const orders = body.hits.hits.map((document) => {
+                return plainToClass(Order, document._source);
             });
 
-        const orders = body.hits.hits.map((document) => {
-            return plainToClass(Order, document._source);
-        });
-
-        return Promise.resolve(orders);
+            return Promise.resolve(orders);
     }
 
     async update(id: string, order: Order): Promise<Order> {

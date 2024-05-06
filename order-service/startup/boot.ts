@@ -8,7 +8,7 @@ import cartApis from "../routes/cart.routes"
 
 export const startApplication = function (app: Application) {
     app.use(express.json());
-   /// app.use(helmet());
+    /// app.use(helmet());
     app.use(cors());
     app.use(compression());
     app.use("/api/orders", ordersApis);

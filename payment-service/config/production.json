@@ -5,14 +5,11 @@
   },
   "database": {
     "host": "mongodb",
-    "port": 3307,
+    "port": 27018,
     "username": "mongodb",
     "name": "ecommerce"
   },
-  "elasticSearch": {
-    "host":"https://172.18.0.1:9200"
-  },
   "kafka": {
-    "brokers": "http:/localhost:9092"
+    "brokers": "localhost:9092"
   }
 }

@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Order{
+model Product{
    id String @id @default(dbgenerated())
    name String
    description String

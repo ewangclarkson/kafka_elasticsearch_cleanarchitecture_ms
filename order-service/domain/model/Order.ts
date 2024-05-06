@@ -1,12 +1,11 @@
 import {Expose} from "class-transformer"
 import {PaymentStatus} from "../../config/constants/payment.status";
-import {BaseEntity, Column, Entity, Generated, PrimaryColumn} from "typeorm";
+import {BaseEntity, Column, Entity,PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class Order extends BaseEntity {
     @Expose()
-    @PrimaryColumn('uuid', {default: () => 'uuid_generate_v4()'})
-    @Generated('uuid')
+    @PrimaryGeneratedColumn("uuid")
     id!: string;
 
     @Expose()

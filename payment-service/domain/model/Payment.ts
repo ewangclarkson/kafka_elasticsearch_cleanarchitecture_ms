@@ -1,14 +1,15 @@
 import {Expose} from "class-transformer";
-import {BaseEntity, Column, Entity, Generated, PrimaryColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ObjectId, ObjectIdColumn, PrimaryGeneratedColumn} from "typeorm";
 import {PaymentStatus} from "../../config/constants/payment.status";
 import {PaymentChannel} from "../../config/constants/payment.method";
 
 
 @Entity()
 export class Payment extends BaseEntity {
+    @ObjectIdColumn()
+    _id!: ObjectId;
     @Expose()
-    @PrimaryColumn('uuid', {default: () => 'uuid_generate_v4()'})
-    @Generated('uuid')
+    @PrimaryGeneratedColumn("uuid")
     id!: string;
 
     @Expose()

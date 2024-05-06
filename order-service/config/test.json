@@ -10,9 +10,9 @@
     "name": "ecommerce"
   },
   "elasticSearch": {
-    "host": "https://172.18.0.1:9200"
+    "username": "ewangclarks"
   },
   "kafka": {
-    "brokers": "http:/localhost:9092"
+    "brokers": "localhost:9092"
   }
 }

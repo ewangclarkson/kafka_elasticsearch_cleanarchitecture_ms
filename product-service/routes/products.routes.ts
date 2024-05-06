@@ -1,7 +1,7 @@
 import express, {Router} from "express";
-import {container} from "../ioc/inversify.inversify.config";
+import {container} from "../inversify/inversify.ioc.config";
 import ProductController from "../controller/ProductController";
-import {IOC} from "../ioc/inversify.inversify.types";
+import {IOC} from "../inversify/inversify.ioc.types";
 
 const router = express.Router();
 

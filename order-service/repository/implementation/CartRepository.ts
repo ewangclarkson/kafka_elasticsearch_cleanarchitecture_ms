@@ -4,8 +4,6 @@ import {injectable} from "inversify";
 import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
 import {plainToClass} from "class-transformer";
-import _ from "lodash";
-import {Order} from "../../domain/model/Order";
 
 @injectable()
 export default class CartRepository implements ICartRepository {
@@ -40,13 +38,18 @@ export default class CartRepository implements ICartRepository {
     }
 
     async findOne(id: string): Promise<Cart | null> {
-        const cart = await elasticClient
-            .get<Cart>({
-                id: id,
-                index: ElasticIndices.CARTS,
-            });
+        try {
+            const cart = await elasticClient
+                .get<Cart>({
+                    id: id,
+                    index: ElasticIndices.CARTS,
+                });
+            return Promise.resolve(cart._source!);
+        } catch (e) {
+            return Promise.resolve(null);
+        }
 
-        return Promise.resolve(cart._source!);
+
     }
 
     async find(): Promise<Cart[]> {

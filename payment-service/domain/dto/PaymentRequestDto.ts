@@ -1,5 +1,5 @@
 import {PaymentChannel} from "../../config/constants/payment.method";
-import {IsEnum, IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsEnum, IsNotEmpty, IsNumber, IsString, IsUUID} from "class-validator";
 
 export default class PaymentRequestDto {
     @IsEnum(PaymentChannel)
@@ -14,15 +14,12 @@ export default class PaymentRequestDto {
     lastName!: string;
 
     @IsString()
-    @IsNotEmpty()
     cardNumber!: string;
 
     @IsString()
-    @IsNotEmpty()
     expiryDate!: string;
 
     @IsNumber()
-    @IsNotEmpty()
     cardPin!: number;
 
     @IsString()
@@ -33,7 +30,7 @@ export default class PaymentRequestDto {
     @IsNotEmpty()
     amount!: string;
 
-    @IsNumber()
+    @IsUUID('4')
     @IsNotEmpty()
     orderId!: string;
 }

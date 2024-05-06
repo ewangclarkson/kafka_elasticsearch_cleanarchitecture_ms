@@ -5,7 +5,7 @@
          "es6"
       ],
       "types": ["reflect-metadata"],
-      "target": "es5",
+      "target": "es6",
       "module": "commonjs",
       "strict": true,
       "esModuleInterop": true,
@@ -18,8 +18,7 @@
       "sourceMap": true
    },
    "include": [
-     "./**/*.ts",
-     "node_modules/@types/node/globals.d.ts"
+      "./**/*.ts"
    ],
    "exclude": ["node_modules"]
 }
