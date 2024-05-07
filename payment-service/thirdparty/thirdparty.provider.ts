@@ -23,7 +23,7 @@ export default class ThirdPartyProvider implements IThirdPartyProvider {
     }
 
 
-    getThirdPartyPaymentProvider(channel: PaymentChannel): Promise<ProviderStrategy> {
+    async getThirdPartyPaymentProvider(channel: PaymentChannel): Promise<ProviderStrategy> {
 
         switch (channel) {
             case PaymentChannel.MTN_MOBILE_MONEY:

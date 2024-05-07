@@ -32,19 +32,23 @@ services:
       - ./db/postgres-data:/var/lib/postgresql/data
 
   mongodb:
-    image: mongo:latest
+    image: mongo
     container_name: mongodb
     restart: always
-    ports:
-      - '27018:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo123
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 12345
       MONGO_INITDB_DATABASE: ecommerce
+    command:
+      - '--logpath'
+      - '/var/log/mongodb/mongod.log'
+    ports:
+      - 27010:27017
+    volumes:
+      - ./db/mongodb_data:/data/db
+      - ./payment-service/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     networks:
       - kafka_es_ms_network
-    volumes:
-      - ./db/mongo-data:/data/db
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest

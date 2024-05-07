@@ -12,7 +12,7 @@ RUN npm install
 
 
 # Expose the port that the application listens on.
-EXPOSE 8002
+EXPOSE 8001
 
 # Run the application.
 CMD npm start

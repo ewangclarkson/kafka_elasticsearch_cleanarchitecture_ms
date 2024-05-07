@@ -11,7 +11,7 @@ COPY . /usr/src/app
 RUN npm install
 
 # Expose the port that the application listens on.
-EXPOSE 8002
+EXPOSE 8003
 
 # Run the application.
 CMD npm start
