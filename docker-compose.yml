@@ -1,77 +1,108 @@
 version: '3.8'
 services:
+  mysqldb:
+    image: mysql:latest
+    container_name: mysqldb
+    restart: always
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: ecommerce
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql123
+    networks:
+      - kafka_es_ms_network
+    volumes:
+      - ./db/mysql-data:/var/lib/mysql
+
   postgresdb:
     image: postgres:latest
-    container_name: postgres
+    container_name: postgresdb
     restart: always
+    ports:
+      - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
-    ports:
-      - '5432:5432'
+      POSTGRES_DB: ecommerce
+    networks:
+      - kafka_es_ms_network
     volumes:
-      - postgres_db:/var/lib/postgresql/data
+      - ./db/postgres-data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo123
+      MONGO_INITDB_DATABASE: ecommerce
+    networks:
+      - kafka_es_ms_network
+    volumes:
+      - ./db/mongo-data:/data/db
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - '2181:2181'
     networks:
       - kafka_es_ms_network
 
-#  mysqldb:
-#    image: mysql:8.2
-#    container_name: mysql
-#    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-#    restart: always
-#    environment:
-#      MYSQL_DATABASE: 'ecommerce'
-#      MYSQL_USER: 'mysql'
-#      MYSQL_PASSWORD: 'mysql123'
-#      MYSQL_ROOT_PASSWORD: 'mysql123'
-#      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-#    volumes:
-#      - mysql_db:/var/lib/mysql
-#    ports:
-#      - '3307:3306'
-#    networks:
-#      - kafka_es_ms_network
-
-  mongodb:
-    image: mongo
-    container_name: mongo
-    restart: always
-    environment:
-      MONGO_USER: mongo
-      MONGO_PASSWORD: mongo123
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
     ports:
-      - 27018:27017
-    volumes:
-      - mongo-data:/data/db
+      - '9092:9092'
+      - '29092:29092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - kafka_es_ms_network
 
   product-service:
     build:
-      dockerfile: Dockerfile
       context: ./product-service
+      dockerfile: Dockerfile
+    restart: always
     ports:
-      - 8001:8001
+      - '8001:8001'
     depends_on:
       - postgresdb
     environment:
-      DB_PASSWORD: postgres123
-      NODE_ENV: development
-      CLOUD_ID: 4748882a49494f44b9d08c3cb8cf8222:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDg4MzBiYzlmMGY1YTRhZjhiOTBkNTg3MzBhZGQ2NzNmJGZhMmVmMDk4YjRkNTQzODE5NzcxNzQ4ZjI5ODNlZTEw
-      ELASTIC_PASSWORD: Jesusislordforever7+
+      - NODE_ENV=development
+      - db_password=postgres123
+      - cloud_id=4748882a49494f44b9d08c3cb8cf8222:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDg4MzBiYzlmMGY1YTRhZjhiOTBkNTg3MzBhZGQ2NzNmJGZhMmVmMDk4YjRkNTQzODE5NzcxNzQ4ZjI5ODNlZTEw
+      - elastic_password=Jesusislordforever7+
+      - DATABASE_URL=postgresql://postgres:postgres123@postgresdb:5432/ecommerce?schema=public
     networks:
       - kafka_es_ms_network
 
   order-service:
     build:
-      dockerfile: Dockerfile
       context: ./order-service
+      dockerfile: Dockerfile
+    restart: always
     ports:
-      - 8002:8002
-#    depends_on:
-#      - mysqldb
+      - '8002:8002'
+    depends_on:
+      - mysqldb
+      - kafka
     environment:
-      - db_password=Jesusislordforever7+
+      - db_password=mysql123
       - NODE_ENV=development
       - cloud_id=4748882a49494f44b9d08c3cb8cf8222:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDg4MzBiYzlmMGY1YTRhZjhiOTBkNTg3MzBhZGQ2NzNmJGZhMmVmMDk4YjRkNTQzODE5NzcxNzQ4ZjI5ODNlZTEw
       - elastic_password=Jesusislordforever7+
@@ -80,24 +111,27 @@ services:
 
   payment-service:
     build:
-      dockerfile: Dockerfile
       context: ./payment-service
+      dockerfile: Dockerfile
+    restart: always
     ports:
-      - 8003:8003
+      - '8003:8003'
+    environment:
+      - db_password=mongo123
+      - NODE_ENV=development
     depends_on:
       - mongodb
-    environment:
-      DB_PASSWORD: mongo123
-      NODE_ENV: development
+      - kafka
     networks:
       - kafka_es_ms_network
 
   api-gateway:
     build:
-      dockerfile: Dockerfile
       context: ./api-gateway
+      dockerfile: Dockerfile
+    restart: always
     ports:
-      - 8000:80
+      - '8000:80'
     depends_on:
       - product-service
       - order-service
@@ -107,8 +141,12 @@ services:
 
 networks:
   kafka_es_ms_network:
+    driver: bridge
 
 volumes:
-  postgres_db:
-  mysql_db:
+  postgres-data:
+    driver: local
   mongo-data:
+    driver: local
+  mysql-data:
+    driver: local

@@ -65,18 +65,21 @@ export default class ProductRepository implements IProductRepository {
     }
 
     async find(): Promise<Product[]> {
+        try {
+            const body = await elasticClient
+                .search({
+                    index: ElasticIndices.PRODUCTS,
+                    query: {match_all: {}}
+                });
 
-        const body = await elasticClient
-            .search({
-                index: ElasticIndices.PRODUCTS,
-                query: {match_all: {}}
+            const products = body.hits.hits.map((document) => {
+                return plainToClass(Product, document._source);
             });
 
-        const products = body.hits.hits.map((document) => {
-            return plainToClass(Product, document._source);
-        });
-
-        return Promise.resolve(products);
+            return Promise.resolve(products);
+        } catch (e) {
+            return Promise.resolve([]);
+        }
     }
 
     async update(id: string, product: Product): Promise<Product> {

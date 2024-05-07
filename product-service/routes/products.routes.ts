@@ -2,6 +2,7 @@ import express, {Router} from "express";
 import {container} from "../inversify/inversify.ioc.config";
 import ProductController from "../controller/ProductController";
 import {IOC} from "../inversify/inversify.ioc.types";
+import 'express-async-errors';
 
 const router = express.Router();
 

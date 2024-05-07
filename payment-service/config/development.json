@@ -10,6 +10,6 @@
     "name": "ecommerce"
   },
   "kafka": {
-    "brokers": "localhost:9092"
+    "brokers": "kafka:9092"
   }
 }

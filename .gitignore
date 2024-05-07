@@ -27,6 +27,10 @@ build/
 # dependencies
 /node_modules
 /prisma/migrations/*
+/mongo-data
+/postgres-data
+/mysql-data
+/db
 
 # profiling files
 chrome-profiler-events*.json

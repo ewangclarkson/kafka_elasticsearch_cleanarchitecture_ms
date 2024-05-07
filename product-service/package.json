@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-jest --watchAll --verbose",
-    "start": "tsc && node app.js",
+    "start": "ts-node app.ts",
     "dev": "nodemon --exec 'ts-node' app.ts"
   },
   "keywords": [],

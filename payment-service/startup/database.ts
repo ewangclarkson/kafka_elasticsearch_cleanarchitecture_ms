@@ -9,6 +9,7 @@ export const AppDataSource = new DataSource({
     username: config.get("database.username"),
     password: config.get("database.password"),
     database: config.get("database.name"),
+    authSource: 'admin',
     synchronize: true,
     logging: false,
     entities: [Payment],

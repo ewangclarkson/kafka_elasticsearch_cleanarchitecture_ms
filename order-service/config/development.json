@@ -4,15 +4,15 @@
     "port": 8002
   },
   "database": {
-    "host": "localhost",
-    "port": 3306,
-    "username": "root",
+    "host": "http://mysqldb",
+    "port": 3307,
+    "username": "mysql",
     "name": "ecommerce"
   },
   "elasticSearch": {
     "username": "ewangclarks"
   },
   "kafka": {
-    "brokers": "localhost:9092"
+    "brokers": "kafka:9092"
   }
 }

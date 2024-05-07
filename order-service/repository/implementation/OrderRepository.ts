@@ -62,6 +62,7 @@ export default class OrderRepository implements IOrderRepository {
 
     async find(): Promise<Order[]> {
 
+        try {
             const body = await elasticClient
                 .search({
                     index: ElasticIndices.ORDERS,
@@ -73,6 +74,9 @@ export default class OrderRepository implements IOrderRepository {
             });
 
             return Promise.resolve(orders);
+        }catch (e) {
+            return Promise.resolve([]);
+        }
     }
 
     async update(id: string, order: Order): Promise<Order> {

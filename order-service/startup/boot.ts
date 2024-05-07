@@ -4,6 +4,7 @@ import compression from "compression";
 //import helmet from "helmet";
 import ordersApis from "../routes/orders.routes";
 import cartApis from "../routes/cart.routes"
+import {errorHandler} from "../middleware/error.handler";
 
 
 export const startApplication = function (app: Application) {
@@ -13,4 +14,5 @@ export const startApplication = function (app: Application) {
     app.use(compression());
     app.use("/api/orders", ordersApis);
     app.use("/api/carts", cartApis);
+    app.use(errorHandler);
 };

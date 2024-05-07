@@ -53,16 +53,21 @@ export default class CartRepository implements ICartRepository {
     }
 
     async find(): Promise<Cart[]> {
-        const body = await elasticClient
-            .search({
-                index: ElasticIndices.CARTS,
-                query: {match_all: {}}
-            });
 
-        const carts = body.hits.hits.map((document) => {
-            return plainToClass(Cart, document._source);
-        });
-        return Promise.resolve(carts);
+        try {
+            const body = await elasticClient
+                .search({
+                    index: ElasticIndices.CARTS,
+                    query: {match_all: {}}
+                });
+
+            const carts = body.hits.hits.map((document) => {
+                return plainToClass(Cart, document._source);
+            });
+            return Promise.resolve(carts);
+        }catch (e) {
+            return Promise.resolve([]);
+        }
     }
 
     async update(id: string, cart: Cart): Promise<Cart | null> {
