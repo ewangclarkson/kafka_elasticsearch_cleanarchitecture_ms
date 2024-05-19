@@ -15,7 +15,7 @@ const startServer = function () {
 
     DatabaseConfigManager
         .getInstance()
-        .getDataSourceConfig()
+        .getDataSource()
         .initialize()
         .then(() => console.log("database configured successfully"))
         .catch(error => console.log(error));

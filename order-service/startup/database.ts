@@ -6,11 +6,11 @@ import config from "config"
 
 //singleton design pattern
 export default class DatabaseConfigManager {
-    private readonly dataSourceConfig: DataSource;
+    private readonly dataSource: DataSource;
     private static instance: DatabaseConfigManager;
 
     constructor() {
-        this.dataSourceConfig = new DataSource({
+        this.dataSource = new DataSource({
             type: "mysql",
             host: config.get("database.host"),
             port: config.get("database.port"),
@@ -32,8 +32,8 @@ export default class DatabaseConfigManager {
         return this.instance;
     }
 
-    getDataSourceConfig() {
-        return this.dataSourceConfig;
+    getDataSource() {
+        return this.dataSource;
     }
 
 }
