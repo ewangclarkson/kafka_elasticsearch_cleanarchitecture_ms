@@ -2,7 +2,7 @@ import express, {Application} from "express";
 import "reflect-metadata";
 import {startApplication} from "./startup/boot";
 import config from "config"
-import {AppDataSource} from "./startup/database";
+import DatabaseConfigManager from "./startup/database";
 import KafkaService from "./service/KafkaService";
 import {KafkaTopics} from "./config/constants/kafka.topics";
 import {container} from "./inversify/inversify.ioc.config";
@@ -13,7 +13,10 @@ const kafkaService: KafkaService = container.get<KafkaService>(IOC.KafkaService)
 
 const startServer = function () {
 
-    AppDataSource.initialize()
+    DatabaseConfigManager
+        .getInstance()
+        .getDataSourceConfig()
+        .initialize()
         .then(() => console.log("database configured successfully"))
         .catch(error => console.log(error));
 

@@ -7,10 +7,10 @@ services:
     ports:
       - '3307:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: mysql123
-      MYSQL_DATABASE: ecommerce
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - kafka_es_ms_network
     volumes:
@@ -23,9 +23,9 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
     networks:
       - kafka_es_ms_network
     volumes:
@@ -36,9 +36,9 @@ services:
     container_name: mongodb
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 12345
-      MONGO_INITDB_DATABASE: ecommerce
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
     command:
       - '--logpath'
       - '/var/log/mongodb/mongod.log'
@@ -87,11 +87,11 @@ services:
     depends_on:
       - postgresdb
     environment:
-      - NODE_ENV=development
-      - db_password=postgres123
-      - cloud_id=4748882a49494f44b9d08c3cb8cf8222:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDg4MzBiYzlmMGY1YTRhZjhiOTBkNTg3MzBhZGQ2NzNmJGZhMmVmMDk4YjRkNTQzODE5NzcxNzQ4ZjI5ODNlZTEw
-      - elastic_password=Jesusislordforever7+
-      - DATABASE_URL=postgresql://postgres:postgres123@postgresdb:5432/ecommerce?schema=public
+      - NODE_ENV=${NODE_ENV}
+      - db_password=${POSTGRES_PASSWORD}
+      - cloud_id=${CLOUD_ID}
+      - elastic_password=${ELASTIC_PASWORD}
+      - DATABASE_URL=${DATABASE_URL}
     networks:
       - kafka_es_ms_network
 
@@ -106,10 +106,10 @@ services:
       - mysqldb
       - kafka
     environment:
-      - db_password=mysql123
-      - NODE_ENV=development
-      - cloud_id=4748882a49494f44b9d08c3cb8cf8222:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJDg4MzBiYzlmMGY1YTRhZjhiOTBkNTg3MzBhZGQ2NzNmJGZhMmVmMDk4YjRkNTQzODE5NzcxNzQ4ZjI5ODNlZTEw
-      - elastic_password=Jesusislordforever7+
+      - db_password=${MYSQL_PASSWORD}
+      - NODE_ENV=${NODE_ENV}
+      - cloud_id=${CLOUD_ID}
+      - elastic_password=${ELASTIC_PASSWORD}
     networks:
       - kafka_es_ms_network
 
@@ -121,8 +121,8 @@ services:
     ports:
       - '8003:8003'
     environment:
-      - db_password=mongo123
-      - NODE_ENV=development
+      - db_password=${MONGO_DB_PASSWORD}
+      - NODE_ENV=${NODE_ENV}
     depends_on:
       - mongodb
       - kafka

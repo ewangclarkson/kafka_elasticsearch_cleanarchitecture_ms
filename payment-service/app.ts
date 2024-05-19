@@ -2,14 +2,17 @@ import express, {Application} from "express";
 import "reflect-metadata";
 import {startApplication} from "./startup/boot";
 import config from "config"
-import {AppDataSource} from "./startup/database";
+import DatabaseConfigManager from "./startup/database";
 
 const app: Application = express();
 
 
 const startServer = function () {
 
-    AppDataSource.initialize()
+    DatabaseConfigManager
+        .getInstance()
+        .getDataSourceConfig()
+        .initialize()
         .then(() => console.log("database configured successfully"))
         .catch(error => console.log(error));
 
