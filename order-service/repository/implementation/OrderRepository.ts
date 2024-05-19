@@ -1,7 +1,7 @@
 import IOrderRepository from "../IOrderRepository";
 import {Order} from "../../domain/model/Order";
 import {injectable} from "inversify";
-import {elasticClient} from "../../elasticsearch/elasticsearch";
+import ElasticSearchClientManager from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
 import {plainToClass} from "class-transformer";
 import {PaymentStatus} from "../../config/constants/payment.status";
@@ -16,13 +16,22 @@ export default class OrderRepository implements IOrderRepository {
      * @param order
      */
 
+    private readonly elasticClient: any;
+
+    constructor() {
+        this.elasticClient = ElasticSearchClientManager
+            .getInstance()
+            .getElasticClient();
+    }
+
+
     async create(order: Order): Promise<Order> {
 
         order.orderStatus = PaymentStatus.PENDING;
         order = await Order.save(order);
 
         // add the data to elastic search
-        await elasticClient
+        await this.elasticClient
             .index({
                 index: ElasticIndices.ORDERS,
                 id: order.id,
@@ -36,7 +45,7 @@ export default class OrderRepository implements IOrderRepository {
         const order = await Order.findOneById(id);
 
         await Order.delete(id);
-        await elasticClient
+        await this.elasticClient
             .delete({
                 id: id,
                 index: ElasticIndices.ORDERS,
@@ -47,14 +56,14 @@ export default class OrderRepository implements IOrderRepository {
 
     async findOne(id: string): Promise<Order | null> {
         try {
-            const order = await elasticClient
+            const order = await this.elasticClient
                 .get<Order>({
                     id: id,
                     index: ElasticIndices.ORDERS,
                 });
 
             return Promise.resolve(order._source!);
-        }catch (e) {
+        } catch (e) {
             return Promise.resolve(null);
         }
 
@@ -63,7 +72,7 @@ export default class OrderRepository implements IOrderRepository {
     async find(): Promise<Order[]> {
 
         try {
-            const body = await elasticClient
+            const body = await this.elasticClient
                 .search({
                     index: ElasticIndices.ORDERS,
                     query: {match_all: {}}
@@ -74,14 +83,14 @@ export default class OrderRepository implements IOrderRepository {
             });
 
             return Promise.resolve(orders);
-        }catch (e) {
+        } catch (e) {
             return Promise.resolve([]);
         }
     }
 
     async update(id: string, order: Order): Promise<Order> {
         order = await Order.save(order);
-        await elasticClient
+        await this.elasticClient
             .update({
                 index: ElasticIndices.ORDERS,
                 id: id,

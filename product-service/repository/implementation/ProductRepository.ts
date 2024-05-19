@@ -3,18 +3,22 @@ import {Product} from "../../domain/model/Product";
 import _ from "lodash"
 import {PrismaClient} from "@prisma/client";
 import {injectable} from "inversify";
-import {elasticClient} from "../../elasticsearch/elasticsearch";
 import {ElasticIndices} from "../../config/constants/ElasticIndices";
 import {plainToClass} from "class-transformer";
+import ElasticSearchClientManager from "../../elasticsearch/elasticsearch";
 
 
 @injectable()
 export default class ProductRepository implements IProductRepository {
 
-    private _prismaClient!: PrismaClient;
+    private  readonly _prismaClient!: PrismaClient;
+    private readonly _elasticClient: any;
 
     constructor() {
         this._prismaClient = new PrismaClient();
+        this._elasticClient = ElasticSearchClientManager
+            .getInstance()
+            .getElasticClient();
     }
 
     async create(product: Product): Promise<Product> {
@@ -22,7 +26,7 @@ export default class ProductRepository implements IProductRepository {
         product = await this._prismaClient.product.create({
             data: (_.omit(product, ['id', 'createdAt', 'updatedAt']))
         });
-        await elasticClient
+        await this._elasticClient
             .index({
                 index: ElasticIndices.PRODUCTS,
                 id: product.id,
@@ -38,7 +42,7 @@ export default class ProductRepository implements IProductRepository {
 
         await this._prismaClient.product.delete({where: {id: id}});
 
-        await elasticClient
+        await this._elasticClient
             .delete({
                 id: id,
                 index: ElasticIndices.PRODUCTS,
@@ -51,7 +55,7 @@ export default class ProductRepository implements IProductRepository {
     async findOne(id: string): Promise<Product | null> {
 
         try {
-            const product = await elasticClient
+            const product = await this._elasticClient
                 .get<Product>({
                     id: id,
                     index: ElasticIndices.PRODUCTS,
@@ -66,7 +70,7 @@ export default class ProductRepository implements IProductRepository {
 
     async find(): Promise<Product[]> {
         try {
-            const body = await elasticClient
+            const body = await this._elasticClient
                 .search({
                     index: ElasticIndices.PRODUCTS,
                     query: {match_all: {}}
@@ -88,7 +92,7 @@ export default class ProductRepository implements IProductRepository {
             where: {id: id},
             data: (_.omit(product, ['id', 'createdAt', 'updatedAt']))
         });
-        await elasticClient
+        await this._elasticClient
             .update({
                 index: ElasticIndices.PRODUCTS,
                 id: id,
